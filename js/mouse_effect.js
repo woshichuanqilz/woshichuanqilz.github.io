@@ -101,3 +101,35 @@ function() {
     },
     100)
 } ();
+
+//背景音不能自动播放: 监听WeixinJSBridgeReady事件、DOMContentLoaded事件
+var audio = document.getElementById('bgmusic');
+    document.addEventListener('DOMContentLoaded', function () {//加载over
+        function audioAutoPlay() {
+            audio.play();
+            audio.volume = 1;//音量最大
+            if (!audio.paused) {//如果没暂停，就显示播放图标
+                $(".musicBg_close").hide();
+                $(".musicBg_on").show();
+            } else {
+                $(".musicBg_close").show();
+                $(".musicBg_on").hide();
+            }
+            document.addEventListener("WeixinJSBridgeReady", function () {
+                audio.play();
+                audio.volume = 1;
+                $(".musicBg_close").hide();
+                $(".musicBg_on").show();
+            }, false);
+        }
+    audioAutoPlay();
+});
+//部分Android浏览器和所有IOS下Safari浏览器不支持自动播放, 通过手势事件播放音乐
+    function musicInBrowserHandler() {
+        audio.play();
+        audio.volume = 1;
+        $(".musicBg_close").hide();
+        $(".musicBg_on").show();
+        document.body.removeEventListener('touchstart', musicInBrowserHandler);
+    }
+    document.body.addEventListener('touchstart', musicInBrowserHandler);
